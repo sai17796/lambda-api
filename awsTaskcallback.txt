@@ -1,0 +1,25 @@
+import com.amazonaws.services.lambda.runtime.Context
+import com.amazonaws.services.lambda.runtime.RequestHandler
+import com.amazonaws.services.lambda.runtime.events.SQSEvent
+import okhttp3.*
+
+
+class AwsTaskCallBack: RequestHandler<SQSEvent, Void?> {
+    override fun handleRequest(event: SQSEvent, context: Context?): Void? {
+
+
+
+        for (msg in event.records) {
+            var message=msg.body.toString();
+            print("message ${message}")
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("https://gt0u9n4is8.execute-api.us-east-1.amazonaws.com/Prod/sai")
+                .post(RequestBody.create(MediaType.parse("application/json"),message))
+                .build()
+            val response = client.newCall(request).execute()
+            println("response $response")
+        }
+        return null;
+    }
+}
